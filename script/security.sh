@@ -56,8 +56,8 @@ su -c 'update-grub'
 echo 1 | sudo tee /proc/sys/kernel/unprivileged_bpf_disabled
 
 apt-get install ufw -y
-ufw enable
-ufw allow ssh
+# ufw enable
+# ufw allow ssh
 
 # harden umask settings:
 su -c "cat ${staging_directory}/files/login_defs > /etc/login.defs"

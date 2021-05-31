@@ -1,6 +1,6 @@
 {
     "variables": {
-        "vm_name": "debian-10.9.0-amd64",
+        "vm_name": "debian-10-amd64",
         "numvcpus": "2",
         "memsize": "2048",
         "disk_size": "40960",
@@ -9,8 +9,8 @@
         "ssh_username" : "chef",
         "ssh_password" : "chef",
         "staging_directory": "deploy",
-        "cookbook_paths": "/home/tmcadams/chef-repo/cookbooks/chef-os-hardening",
-        "boot_wait": "5s"
+        "boot_wait": "5s",
+        "output_directory": ""
     },
     "provisioners" : [
         {
@@ -43,13 +43,16 @@
             "type": "chef-solo",
             "version": "14",
             "cookbook_paths": ["cookbooks"],
-            "run_list": ["os-hardening"],
+            "run_list": ["os-hardening", "firewall"],
             "json": {
                 "os-hardening": {
                     "components": {
                       "auditd": true
                     }
-            }
+                },
+                "firewall": {
+                    "allow_ssh": true
+                }
             }
         }
     ],
@@ -76,7 +79,8 @@
             "memsize": "{{ user `memsize` }}",
             "numvcpus": "{{ user `numvcpus` }}",
             "virtualHW.version": "14"
-          }
+          },
+          "output_directory": "{{ user `output_directory` }}"
         }
     ]
 }
