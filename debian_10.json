@@ -1,0 +1,82 @@
+{
+    "variables": {
+        "vm_name": "debian-10.9.0-amd64",
+        "numvcpus": "2",
+        "memsize": "2048",
+        "disk_size": "40960",
+        "iso_url": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.9.0-amd64-netinst.iso",
+        "iso_checksum": "8660593d10de0ce7577c9de4dab886ff540bc9843659c8879d8eea0ab224c109",
+        "ssh_username" : "chef",
+        "ssh_password" : "chef",
+        "staging_directory": "deploy",
+        "cookbook_paths": "/home/tmcadams/chef-repo/cookbooks/chef-os-hardening",
+        "boot_wait": "5s"
+    },
+    "provisioners" : [
+        {
+            "type": "shell",
+            "remote_file": "stage_deployment.sh",
+            "remote_path": "/home/{{user `ssh_username`}}/stage_deployment.sh",
+            "inline": [
+                "mkdir {{user `staging_directory`}}"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "files",
+            "destination": "{{user `staging_directory`}}"
+        },
+        {
+            "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+            "pause_before": "15s",
+            "environment_vars": [
+              "staging_directory={{user `staging_directory`}}",
+              "ADMIN_USER={{user `ssh_username`}}",
+              "ADMIN_PASSWORD={{user `ssh_password`}}"
+            ],
+            "scripts": [
+              "script/security.sh"
+            ],
+            "type": "shell"
+        },
+        {
+            "type": "chef-solo",
+            "version": "14",
+            "cookbook_paths": ["cookbooks"],
+            "run_list": ["os-hardening"],
+            "json": {
+                "os-hardening": {
+                    "components": {
+                      "auditd": true
+                    }
+            }
+            }
+        }
+    ],
+      "builders": [
+        {
+          "type": "vmware-iso",
+          "boot_command": ["<esc>auto preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-10.seed<enter>"],
+          "boot_wait": "{{ user `boot_wait` }}",
+          "disk_size": "{{ user `disk_size` }}",
+          "disk_type_id": "0",
+          "guest_os_type": "debian10-64",
+          "headless": false,
+          "http_directory": "http",
+          "iso_checksum": "{{ user `iso_checksum` }}",
+          "iso_url": "{{ user `iso_url` }}",
+          "shutdown_command": "echo 'packer'|sudo -S shutdown -P now",
+          "ssh_password": "{{ user `ssh_password` }}",
+          "ssh_port": 22,
+          "ssh_username": "{{ user `ssh_username` }}",
+          "ssh_timeout": "30m",
+          "vm_name": "{{ user `vm_name` }}",
+          "vmx_data": {
+            "mks.noBeep": "TRUE",
+            "memsize": "{{ user `memsize` }}",
+            "numvcpus": "{{ user `numvcpus` }}",
+            "virtualHW.version": "14"
+          }
+        }
+    ]
+}
