@@ -54,6 +54,11 @@
                     "allow_ssh": true
                 }
             }
+        },
+        {
+            "type": "inspec",
+            "inspec_env_vars": [ "CHEF_LICENSE=accept"],
+            "profile": "https://github.com/dev-sec/cis-dil-benchmark"
         }
     ],
       "builders": [
