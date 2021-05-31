@@ -28,7 +28,7 @@
         },
         {
             "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
-            "pause_before": "15s",
+            "pause_before": "5s",
             "environment_vars": [
               "staging_directory={{user `staging_directory`}}",
               "ADMIN_USER={{user `ssh_username`}}",

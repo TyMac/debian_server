@@ -179,7 +179,7 @@ d-i pkgsel/update-policy select none
 d-i pkgsel/upgrade select full-upgrade
 
 # Set timezone
-d-i time/zone string US/Eastern
+d-i time/zone string Etc/UTC
 
 # Allow weak user password
 d-i user-setup/allow-password-weak boolean true

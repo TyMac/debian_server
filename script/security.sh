@@ -55,7 +55,7 @@ su -c 'update-grub'
 # disable unprivileged BPF
 echo 1 | sudo tee /proc/sys/kernel/unprivileged_bpf_disabled
 
-apt-get install ufw -y
+apt-get install ufw firejail -y
 # ufw enable
 # ufw allow ssh
 
