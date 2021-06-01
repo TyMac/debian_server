@@ -7,6 +7,8 @@ mkdir /etc/chef
 # passwd -l chef
 chage -M 99999 chef
 
+chmod 700 /home/chef
+
 # ensure root is diabled
 passwd -d root
 passwd -l root
@@ -31,6 +33,9 @@ sed -i 's/#PermitRootLogin no/PermitRootLogin no/g' /etc/ssh/sshd_config
 
 # allow pubkey authentication
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
+
+# 5.2.1: Ensure permissions on /etc/ssh/sshd_config are configured
+#chmod 640 /etc/ssh/sshd_config
 
 cat /etc/ssh/sshd_config
 
@@ -84,3 +89,8 @@ su -c "chmod 644 /etc/modprobe.d/hardening-wireless.conf"
 
 echo "tmpfs /run/shm tmpfs defaults,noexec,nosuid 0 0" >> /etc/fstab
 cat /etc/fstab
+
+# change default user directory creation to private
+sed -i 's/DIR_MODE=0755/DIR_MODE=0700/g' /etc/adduser.conf
+
+sed -i 's/USERGROUPS=yes/USERGROUPS=no/g' /etc/adduser.conf
