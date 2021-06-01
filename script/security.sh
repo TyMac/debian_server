@@ -94,3 +94,9 @@ cat /etc/fstab
 sed -i 's/DIR_MODE=0755/DIR_MODE=0700/g' /etc/adduser.conf
 
 sed -i 's/USERGROUPS=yes/USERGROUPS=no/g' /etc/adduser.conf
+
+chmod 600 /etc/passwd-
+
+groupadd wheel
+
+su -c "cat ${staging_directory}/files/pam/su > /etc/pam.d/su"
